@@ -1,19 +1,23 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
 
 const Title = ({name}) => {
   return (
-    <Text
+    <View
       style={{
-        fontSize: 40,
         paddingTop: 20,
         paddingBottom: 10,
-        fontWeight: '800',
-        alignSelf: 'center',
-        color: 'green',
       }}>
-      {name}
-    </Text>
+      <Text
+        style={{
+          fontSize: 40,
+          textAlign: 'center',
+          color: 'green',
+          fontWeight: '800',
+        }}>
+        {name}
+      </Text>
+    </View>
   );
 };
 

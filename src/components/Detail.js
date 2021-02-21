@@ -14,9 +14,7 @@ const Detail = ({title, value}) => {
         <Text
           style={{
             fontSize: 20,
-            paddingBottom: 10,
             fontWeight: '800',
-            alignSelf: 'center',
             color: 'black',
           }}>
           {`${title} : `}
@@ -32,7 +30,6 @@ const Detail = ({title, value}) => {
             fontSize: 20,
             paddingBottom: 10,
             fontWeight: '800',
-            alignSelf: 'center',
             color: 'grey',
           }}>
           {value}

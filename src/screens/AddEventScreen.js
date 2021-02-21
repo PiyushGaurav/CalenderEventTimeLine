@@ -8,6 +8,8 @@ import moment from 'moment';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Title from '../components/Title';
 import genericShadow from '../utils/genericShadow';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ErrorView from '../components/ErrorView';
 
 class AddEventScreen extends Component {
   state = {
@@ -18,9 +20,10 @@ class AddEventScreen extends Component {
     end: moment().format(),
     isDateTimePickerVisible: false,
     pickStartDateSelected: true,
+    error: false,
   };
 
-  addEvent = () => {
+  addEvent = async () => {
     const {title, summary, start, end} = this.state;
     const {eventsData} = this.props;
     let test;
@@ -30,9 +33,12 @@ class AddEventScreen extends Component {
       test = moment(start).isBetween(startTime, endTime);
     });
     if (test) {
-      alert('You already have an event at this time');
+      this.setState({
+        error: true,
+      });
+      //alert('You already have an event at this time');
     } else {
-      this.props.addEvents([
+      const payload = [
         {
           start,
           end,
@@ -40,7 +46,16 @@ class AddEventScreen extends Component {
           summary,
           color: '#ade6d8',
         },
-      ]);
+      ];
+      this.props.addEvents(payload);
+      try {
+        await AsyncStorage.setItem(
+          'LOCAL_EVENTS',
+          JSON.stringify([...eventsData.events, ...payload]),
+        );
+      } catch (e) {
+        console.log(e);
+      }
       this.props.navigation.goBack();
     }
   };
@@ -83,6 +98,20 @@ class AddEventScreen extends Component {
     });
     console.log(this.state);
     this._hideDateTimePicker();
+  };
+
+  errorModal = () => {
+    return (
+      <ErrorView
+        show={this.state.error}
+        errorText={'You already have an event at this time'}
+        onDismiss={() => {
+          this.setState({
+            error: false,
+          });
+        }}
+      />
+    );
   };
 
   render() {
@@ -153,6 +182,7 @@ class AddEventScreen extends Component {
           </View>
           <Button onPress={this.addEvent} title={'ADD EVENT'} />
         </View>
+        {this.errorModal()}
       </>
     );
   }

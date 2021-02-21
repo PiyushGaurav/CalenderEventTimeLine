@@ -2,10 +2,8 @@ import React from 'react';
 import {Modal, StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import Button from './Button';
-import moment from 'moment';
-import Detail from './Detail';
 
-export default function DialogView({show, event, onDismiss}) {
+export default function ErrorView({show, errorText, onDismiss}) {
   return (
     <Modal
       onDismiss={onDismiss}
@@ -14,16 +12,7 @@ export default function DialogView({show, event, onDismiss}) {
       visible={show}>
       <View style={styles.containerStyle}>
         <View style={styles.innerContainer}>
-          <Detail title={'Title'} value={event.title} />
-          <Detail title={'Summary'} value={event.summary} />
-          <Detail
-            title={'Time'}
-            value={`${moment(event.start).hour()} : ${moment(
-              event.start,
-            ).minute()} - ${moment(event.end).hour()} : ${moment(
-              event.end,
-            ).minute()}`}
-          />
+          <Text style={styles.errorText}>{errorText}</Text>
           <Button title={'Okay'} onPress={onDismiss} />
         </View>
       </View>
@@ -31,9 +20,9 @@ export default function DialogView({show, event, onDismiss}) {
   );
 }
 
-DialogView.propTypes = {
+ErrorView.propTypes = {
   show: PropTypes.bool.isRequired,
-  text: PropTypes.string,
+  errorText: PropTypes.string,
 };
 const styles = StyleSheet.create({
   containerStyle: {
@@ -41,8 +30,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   innerContainer: {
-    width: '90%',
-    padding: '5%',
+    width: '80%',
+    height: 150,
     marginHorizontal: '5%',
     marginVertical: '80%',
     backgroundColor: 'white',
@@ -57,10 +46,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5,
     shadowRadius: 20,
-    elevation: 20,
     zIndex: 20,
+    elevation: 20,
   },
-  text: {
+  errorText: {
     fontSize: 20,
     fontWeight: '400',
     color: 'black',
