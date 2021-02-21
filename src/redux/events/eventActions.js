@@ -1,8 +1,8 @@
-import {UPDATE_PHOTO} from './eventTypes';
+import {ADD_EVENT} from './eventTypes';
 
-export const updateUserPhoto = (photo) => {
+export const addEvents = (event) => {
   return {
-    type: UPDATE_PHOTO,
-    payload: photo,
+    type: ADD_EVENT,
+    payload: event,
   };
 };
