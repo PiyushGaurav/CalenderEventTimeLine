@@ -15,6 +15,7 @@ export default function DialogView({show, event, onDismiss}) {
       <View style={styles.containerStyle}>
         <View style={styles.innerContainer}>
           <Detail title={'Title'} value={event.title} />
+          <Detail title={'Category'} value={event.category} />
           <Detail title={'Summary'} value={event.summary} />
           <Detail
             title={'Time'}
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     alignSelf: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,

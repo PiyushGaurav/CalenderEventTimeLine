@@ -20,7 +20,7 @@ const TextField = ({
         fontSize: 15,
         alignSelf: 'center',
         width: '80%',
-        borderRadius: 25,
+        borderRadius: 5,
         borderColor: 'red',
         borderWidth: error ? 2 : 0,
         backgroundColor: 'white',

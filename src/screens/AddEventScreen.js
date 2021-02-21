@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import TextField from '../components/TextField';
 import Button from '../components/Button';
 import {addEvents} from '../redux/events/eventActions';
@@ -11,15 +11,17 @@ import genericShadow from '../utils/genericShadow';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ErrorView from '../components/ErrorView';
 import taskColors from '../utils/taskColors';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 class AddEventScreen extends Component {
   state = {
     title: '',
     summary: '',
+    category: 'Task',
     currentDay: moment().format(),
     start: moment().format(),
     end: moment(moment().format()).add(30, 'minutes'),
-    selectedColor: '',
+    selectedColor: 'Task',
     isDateTimePickerVisible: false,
     pickStartDateSelected: true,
     error: false,
@@ -27,7 +29,7 @@ class AddEventScreen extends Component {
   };
 
   addEvent = async () => {
-    const {title, summary, start, end, selectedColor} = this.state;
+    const {title, summary, start, end, selectedColor, category} = this.state;
     this.setState({
       checkForEmpty: true,
     });
@@ -47,7 +49,6 @@ class AddEventScreen extends Component {
       this.setState({
         error: true,
       });
-      //alert('You already have an event at this time');
     } else {
       const payload = [
         {
@@ -55,6 +56,7 @@ class AddEventScreen extends Component {
           end,
           title,
           summary,
+          category,
           color: selectedColor || 'rgb(153, 153, 153)',
         },
       ];
@@ -157,7 +159,7 @@ class AddEventScreen extends Component {
         <View
           style={{
             flex: 1,
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             backgroundColor: 'white',
           }}>
           <Title name={'Add Event'} />
@@ -173,13 +175,7 @@ class AddEventScreen extends Component {
             onChangeText={this.onChangeSummary}
             error={!summary && checkForEmpty}
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '80%',
-              alignSelf: 'center',
-            }}>
+          <View style={styles.colorContainer}>
             {taskColors.map(({color, selected}, index) => (
               <TouchableOpacity
                 key={index}
@@ -188,20 +184,45 @@ class AddEventScreen extends Component {
                     selectedColor: color,
                   });
                 }}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  backgroundColor: color,
-                  borderWidth: selectedColor === color ? 2 : 0,
-                  ...genericShadow,
-                }}
+                style={[
+                  styles.color,
+                  {
+                    backgroundColor: color,
+                    borderWidth: selectedColor === color ? 2 : 0,
+                  },
+                ]}
               />
             ))}
           </View>
+          <DropDownPicker
+            items={[
+              {
+                label: 'Appointment',
+                value: 'Appointment',
+              },
+              {
+                label: 'Meeting',
+                value: 'Meeting',
+              },
+              {
+                label: 'Task',
+                value: 'Task',
+              },
+            ]}
+            defaultValue={this.state.category}
+            containerStyle={styles.containerStyle}
+            globalTextStyle={styles.globalTextStyle}
+            style={styles.style}
+            itemStyle={styles.itemStyle}
+            dropDownStyle={styles.dropDownStyle}
+            onChangeItem={(item) =>
+              this.setState({
+                category: item.value,
+              })
+            }
+          />
           <View style={styles.timeSection}>
             <View>
-              <Text style={styles.timeTitle}>Start</Text>
               <TouchableOpacity
                 onPress={() => this._showStartDateTimePicker()}
                 style={styles.timeContainer}>
@@ -210,8 +231,8 @@ class AddEventScreen extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
+            <Text style={styles.timeTitle}>{'--'}</Text>
             <View>
-              <Text style={styles.timeTitle}>End</Text>
               <TouchableOpacity
                 onPress={() => this._showEndDateTimePicker()}
                 style={styles.timeContainer}>
@@ -247,11 +268,24 @@ const styles = StyleSheet.create({
   timeSection: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    justifyContent: 'space-between',
-    margin: 10,
-    borderRadius: 25,
+    justifyContent: 'space-evenly',
+    marginVertical: 20,
+    borderRadius: 5,
     alignSelf: 'center',
     width: '80%',
+    ...genericShadow,
+  },
+  colorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
+    width: '80%',
+    alignSelf: 'center',
+  },
+  color: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     ...genericShadow,
   },
   timeTitle: {
@@ -267,5 +301,22 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 25,
     padding: 15,
+  },
+  globalTextStyle: {
+    fontSize: 15,
+  },
+  style: {
+    borderRadius: 30,
+    borderWidth: 0,
+    ...genericShadow,
+  },
+  itemStyle: {
+    justifyContent: 'flex-start',
+    margin: 10,
+  },
+  dropDownStyle: {
+    backgroundColor: '#fafafa',
+    alignSelf: 'center',
+    ...genericShadow,
   },
 });
