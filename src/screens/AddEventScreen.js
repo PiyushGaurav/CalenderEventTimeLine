@@ -10,6 +10,7 @@ import Title from '../components/Title';
 import genericShadow from '../utils/genericShadow';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ErrorView from '../components/ErrorView';
+import taskColors from '../utils/taskColors';
 
 class AddEventScreen extends Component {
   state = {
@@ -17,20 +18,30 @@ class AddEventScreen extends Component {
     summary: '',
     currentDay: moment().format(),
     start: moment().format(),
-    end: moment().format(),
+    end: moment(moment().format()).add(30, 'minutes'),
+    selectedColor: '',
     isDateTimePickerVisible: false,
     pickStartDateSelected: true,
     error: false,
+    checkForEmpty: false,
   };
 
   addEvent = async () => {
-    const {title, summary, start, end} = this.state;
+    const {title, summary, start, end, selectedColor} = this.state;
+    this.setState({
+      checkForEmpty: true,
+    });
+    if (this.state.title === '' || this.state.summary === '') {
+      return;
+    }
     const {eventsData} = this.props;
     let test;
     eventsData.events.forEach((event) => {
       const startTime = event.start;
       const endTime = event.end;
-      test = moment(start).isBetween(startTime, endTime);
+      test =
+        moment(start).isBetween(startTime, endTime) ||
+        moment(end).isBetween(startTime, endTime);
     });
     if (test) {
       this.setState({
@@ -44,7 +55,7 @@ class AddEventScreen extends Component {
           end,
           title,
           summary,
-          color: '#ade6d8',
+          color: selectedColor || 'rgb(153, 153, 153)',
         },
       ];
       this.props.addEvents(payload);
@@ -122,6 +133,8 @@ class AddEventScreen extends Component {
       end,
       isDateTimePickerVisible,
       pickStartDateSelected,
+      selectedColor,
+      checkForEmpty,
     } = this.state;
 
     return (
@@ -152,12 +165,40 @@ class AddEventScreen extends Component {
             value={title}
             placeholder={'Enter title of event'}
             onChangeText={this.onChangeTitle}
+            error={!title && checkForEmpty}
           />
           <TextField
             value={summary}
             placeholder={'Enter summary of event'}
             onChangeText={this.onChangeSummary}
+            error={!summary && checkForEmpty}
           />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '80%',
+              alignSelf: 'center',
+            }}>
+            {taskColors.map(({color, selected}, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  this.setState({
+                    selectedColor: color,
+                  });
+                }}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: color,
+                  borderWidth: selectedColor === color ? 2 : 0,
+                  ...genericShadow,
+                }}
+              />
+            ))}
+          </View>
           <View style={styles.timeSection}>
             <View>
               <Text style={styles.timeTitle}>Start</Text>

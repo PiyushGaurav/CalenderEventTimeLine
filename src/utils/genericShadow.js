@@ -1,10 +1,10 @@
 export default {
   shadowColor: 'black',
   shadowOffset: {
-    width: 10,
-    height: 10,
+    width: 1,
+    height: 5,
   },
-  shadowOpacity: 0.5,
+  shadowOpacity: 0.3,
   shadowRadius: 10,
   elevation: 10,
 };
