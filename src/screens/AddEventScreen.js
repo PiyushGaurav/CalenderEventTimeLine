@@ -159,7 +159,7 @@ class AddEventScreen extends Component {
         <View
           style={{
             flex: 1,
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             backgroundColor: 'white',
           }}>
           <Title name={'Add Event'} />
