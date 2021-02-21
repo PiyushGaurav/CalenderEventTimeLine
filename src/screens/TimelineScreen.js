@@ -50,7 +50,7 @@ class TimelineScreen extends Component {
         <SafeAreaView>
           <Header name={"Today's Events"} />
           <Timeline
-            format24h={true}
+            format24h={false}
             eventTapped={(e) => this.onTapEvent(e)}
             events={this.props.eventsData.events.filter((event) =>
               moment(event.start).isSame(this.state.currentDate, 'day'),

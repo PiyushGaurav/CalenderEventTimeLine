@@ -302,6 +302,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     padding: 15,
   },
+  containerStyle: {
+    height: 50,
+    width: '80%',
+    alignSelf: 'center',
+    borderRadius: 5,
+  },
   globalTextStyle: {
     fontSize: 15,
   },
