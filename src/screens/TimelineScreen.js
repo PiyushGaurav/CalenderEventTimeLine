@@ -5,20 +5,47 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import {addEvents} from '../redux/events/eventActions';
 import genericShadow from '../utils/genericShadow';
+import Title from '../components/Title';
+import DialogView from '../components/DialogView';
 
 class TimelineScreen extends Component {
   state = {
     currentDate: moment(new Date()).format('YYYY-MM-DD'),
+    event: null,
+    showEvent: false,
+  };
+
+  eventModal = () => {
+    return (
+      <DialogView
+        show={this.state.showEvent}
+        event={this.state.event}
+        onDismiss={() => this.setShow(false)}
+      />
+    );
+  };
+
+  setShow = (showEvent) => {
+    this.setState({
+      showEvent,
+    });
+  };
+
+  onTapEvent = (event) => {
+    this.setState({
+      event,
+    });
+    this.setShow(true);
   };
 
   render() {
     return (
       <>
         <SafeAreaView>
-          <Text style={styles.title}>Today's Events</Text>
+          <Title name={"Today's Events"} />
           <Timeline
             format24h={true}
-            eventTapped={(e) => console.log(e)}
+            eventTapped={(e) => this.onTapEvent(e)}
             events={this.props.eventsData.events.filter((event) =>
               moment(event.start).isSame(this.state.currentDate, 'day'),
             )}
@@ -26,22 +53,15 @@ class TimelineScreen extends Component {
             start={0}
             end={24}
           />
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('AddEvent');
-            }}
-            style={styles.addButton}>
-            <Text
-              style={{
-                color: 'white',
-                fontSize: 50,
-                fontWeight: '400',
-                alignSelf: 'center',
-              }}>
-              +
-            </Text>
-          </TouchableOpacity>
         </SafeAreaView>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate('AddEvent');
+          }}
+          style={styles.addButton}>
+          <Text style={styles.addtitle}>Add event</Text>
+        </TouchableOpacity>
+        {this.state.showEvent && this.eventModal()}
       </>
     );
   }
@@ -62,20 +82,21 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(TimelineScreen);
 
 const styles = StyleSheet.create({
-  title: {
+  addtitle: {
+    color: 'white',
     fontSize: 30,
-    fontWeight: '800',
-    padding: 10,
+    fontWeight: '600',
+    alignSelf: 'center',
   },
   addButton: {
-    width: 70,
-    height: 70,
+    //width: 70,
+    padding: 10,
     borderRadius: 35,
-    backgroundColor: 'blue',
+    backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 80,
+    bottom: 30,
     right: 30,
     ...genericShadow,
   },
